@@ -2,22 +2,16 @@ package com.appspot.blacktenure188118.servlets;
 
 import com.appspot.blacktenure188118.entities.TelegramUser;
 import com.appspot.blacktenure188118.instagram.InstagramSystem;
-import com.appspot.blacktenure188118.system.Constants;
 import com.appspot.blacktenure188118.system.Network;
 import com.appspot.blacktenure188118.telegram.BotUtils;
 import com.appspot.blacktenure188118.telegram.TelegramSystem;
 import com.appspot.blacktenure188118.telegram.model.Update;
-import com.appspot.blacktenure188118.telegram.model.Webhook;
-import com.google.appengine.repackaged.com.google.gson.Gson;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -25,7 +19,7 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
 
 public class WebHookServlet extends HttpServlet {
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("text/plain;charset=UTF-8");
 
         String body = Network.getBody(request);
@@ -49,17 +43,24 @@ public class WebHookServlet extends HttpServlet {
                     out = "Добро пожаловать.\n";
                 }
 
-                try{
-                    long postsCount = InstagramSystem.getPostsCount(text,id);
-                    telegramUser.urls.add(text);
-                    out += "Пользователь добавлен в список.\n";
-                    out += String.format("У него %d публикаций.",postsCount);
-                }catch (IOException ignored){
+                try {
+
+                    if(!telegramUser.urls.contains(text)){
+                        long postsCount = InstagramSystem.getPostsCount(text, id);
+                        telegramUser.urls.add(text);
+                        out += "Пользователь добавлен в список.\n";
+                        out += String.format("Число публикаций  %d.", postsCount);
+                    }else{
+                        out += "Пользователь уже есть в списке\n";
+                    }
+                } catch (IOException ignored) {
                     out += "Не получилось разобрать профиль пользователя";
                 }
 
                 ofy().save().entities(telegramUser).now();
 
+            }else if(text.equals("/start")){
+                out = "Что- то...";
             } else {
                 out = "Не удалось разобрать сообщение...";
             }
@@ -69,7 +70,7 @@ public class WebHookServlet extends HttpServlet {
         }
     }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         TelegramSystem.startWebHooks();
     }
 }

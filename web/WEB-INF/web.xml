@@ -8,19 +8,11 @@
         <servlet-class>com.appspot.blacktenure188118.servlets.WebHookServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>TestServlet</servlet-name>
-        <servlet-class>com.appspot.blacktenure188118.servlets.TestServlet</servlet-class>
-    </servlet>
-    <servlet>
         <servlet-name>CronServlet</servlet-name>
         <servlet-class>com.appspot.blacktenure188118.servlets.CronServlet</servlet-class>
     </servlet>
 
 
-    <servlet-mapping>
-        <servlet-name>TestServlet</servlet-name>
-        <url-pattern>/test</url-pattern>
-    </servlet-mapping>
     <servlet-mapping>
         <servlet-name>WebHookServlet</servlet-name>
         <url-pattern>/webhook</url-pattern>

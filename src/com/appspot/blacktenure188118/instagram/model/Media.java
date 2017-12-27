@@ -1,11 +1,11 @@
 package com.appspot.blacktenure188118.instagram.model;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 
 public class Media {
 
-    public int count;
+    public long count;
 
-    LinkedList<Post> nodes;
+    public ArrayList<Post> nodes;
 
 }
